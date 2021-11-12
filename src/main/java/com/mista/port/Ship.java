@@ -1,9 +1,20 @@
 package com.mista.port;
 
-public class Ship {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.Exchanger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+public class Ship{
+
+    private static final Logger logger = LoggerFactory.getLogger(Port.class);
+
     String name;
-    int loadingByContainers;
+    Integer loadingByContainers;
     TypeOfShips typeOfShips;
+
 
     public Ship(String name, TypeOfShips typeOfShips) {
         this.name = name;
@@ -22,5 +33,7 @@ public class Ship {
 
         this.loadingByContainers = loadingByContainers;
     }
+
+
 }
 

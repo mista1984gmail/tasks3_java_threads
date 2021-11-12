@@ -3,15 +3,24 @@ package com.mista.port;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Exchanger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 public class Pier implements Runnable{
 
     private static final Logger logger = LoggerFactory.getLogger(Port.class);
+
+    Exchanger<Integer> exchanger;
+    Exchanger<TypeOfShips> exchangerTOS;
 
     Sea sea;
     String name;
     Warehouse warehouse;
 
-    public Pier(Sea sea, String name, Warehouse warehouse) {
+    public Pier(Exchanger<Integer> exchanger, Exchanger<TypeOfShips> exchangerTOS, Sea sea, String name, Warehouse warehouse) {
+        this.exchanger = exchanger;
+        this.exchangerTOS = exchangerTOS;
         this.sea = sea;
         this.name = name;
         this.warehouse = warehouse;
@@ -28,6 +37,13 @@ public class Pier implements Runnable{
                 }
                 logger.info("Piers {} accepted {}", name, ship.name);
                 Thread.sleep(1000);
+
+                if(sea.getShips().size()!=1){
+
+                if (overloadedShip(ship)) continue;
+
+                }
+
                 if(warehouse.addContainer(ship)){
 
                     logger.info("{} unloaded {} containers successfully, in warehouse {} containers",
@@ -50,5 +66,21 @@ public class Pier implements Runnable{
             }
 
         }}
+
+    private boolean overloadedShip(Ship ship) throws InterruptedException {
+        if (ship.typeOfShips==exchangerTOS.exchange(ship.typeOfShips)){
+            try {
+                ship.setLoadingByContainers(exchanger.exchange(ship.getLoadingByContainers()
+                        ,2000, TimeUnit.MILLISECONDS));
+                logger.info("{} was overloaded with {} containers ",
+                        ship.name, ship.getLoadingByContainers());
+                logger.info("Piers {} vacated", name);
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -21,6 +21,10 @@ public class Sea {
         return ships.add(ship);
     }
 
+    public ConcurrentLinkedQueue<Ship> getShips() {
+        return ships;
+    }
+
     public Ship get(){
         while (!ships.isEmpty()){
             return ships.poll();
