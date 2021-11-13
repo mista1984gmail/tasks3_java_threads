@@ -20,7 +20,7 @@ public class Warehouse {
     public synchronized boolean addContainer(Ship ship) throws InterruptedException {
         if (containers.get() < getMaximumContainers()) {
 
-            Thread.sleep((1 + (int) (Math.random() * 10))*1000);
+            Thread.sleep((1 + (int) (Math.random() * 5))*1000);
             containers.getAndAdd(ship.getLoadingByContainers());
 
             return true;
@@ -32,7 +32,7 @@ public class Warehouse {
     public boolean getContainer(Ship ship) throws InterruptedException {
         int maxLifting=ship.typeOfShips.getmaximumСapacity();
         if (containers.get() > 0) {
-            Thread.sleep((1 + (int) (Math.random() * 10))*1000);
+            Thread.sleep((1 + (int) (Math.random() * 5))*1000);
             ship.setLoadingByContainers((int)(maxLifting-5+(Math.random() * 6)));
             if (ship.getLoadingByContainers()>containers.get()){
                 ship.setLoadingByContainers(containers.get());

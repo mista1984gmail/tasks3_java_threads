@@ -28,6 +28,7 @@ public class Pier implements Runnable{
 
     @Override
     public void run() {
+
         while (true) {
             try {
                 Thread.sleep(3000);
@@ -36,13 +37,10 @@ public class Pier implements Runnable{
                     break;
                 }
                 logger.info("Piers {} accepted {}", name, ship.name);
-                Thread.sleep(1000);
 
-                if(sea.getShips().size()!=1){
+                Thread.sleep(3000);
 
                 if (overloadedShip(ship)) continue;
-
-                }
 
                 if(warehouse.addContainer(ship)){
 
@@ -68,7 +66,7 @@ public class Pier implements Runnable{
         }}
 
     private boolean overloadedShip(Ship ship) throws InterruptedException {
-        if (ship.typeOfShips==exchangerTOS.exchange(ship.typeOfShips)){
+        if (ship.typeOfShips==(exchangerTOS.exchange(ship.typeOfShips))){
             try {
                 ship.setLoadingByContainers(exchanger.exchange(ship.getLoadingByContainers()
                         ,2000, TimeUnit.MILLISECONDS));
